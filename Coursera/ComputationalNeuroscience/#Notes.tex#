@@ -1,0 +1,151 @@
+%%% LaTeX Template: Article/Thesis/etc. with colored headings and special fonts
+%%%
+%%% Source: http://www.howtotex.com/
+%%% Feel free to distribute this template, but please keep to referal to http://www.howtotex.com/ here.
+%%% February 2011
+
+%%%%% Preamble
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[bitstream-charter]{mathdesign}
+
+\usepackage[utf8]{inputenc}							% Input encoding
+\usepackage{amsmath}									% Math
+
+\usepackage{xcolor}
+\definecolor{bl}{rgb}{0.0,0.2,0.6} 
+
+\definecolor{background-image}{rgb}{1.0,0.9,0.7} 
+
+% Translating the section, part, ... names into French
+\usepackage[french]{babel}
+
+% Setup the margins
+\usepackage{geometry}
+\newgeometry{margin=2cm}
+
+% Customize the hyperlinks
+\usepackage{hyperref}
+\hypersetup{
+    bookmarks=true,         % show bookmarks bar?
+    unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+    pdftoolbar=true,        % show Acrobat’s toolbar?
+    pdfmenubar=true,        % show Acrobat’s menu?
+    pdffitwindow=false,     % window fit to page when opened
+    pdfstartview={FitH},    % fits the width of the page to the window
+    pdftitle={My title},    % title
+    pdfauthor={Author},     % author
+    pdfsubject={Subject},   % subject of the document
+    pdfcreator={Creator},   % creator of the document
+    pdfproducer={Producer}, % producer of the document
+    pdfkeywords={keyword1} {key2} {key3}, % list of keywords
+    pdfnewwindow=true,      % links in new window
+    colorlinks=true,       % false: boxed links; true: colored links
+    linkcolor=bl,          % color of internal links (change box color with linkbordercolor)
+    citecolor=green,        % color of links to bibliography
+    filecolor=magenta,      % color of file links
+    urlcolor=bl           % color of external links
+}
+
+% For getting the caption on the side of an image
+\usepackage{calc}
+\usepackage{graphicx}
+\usepackage{floatrow}
+\floatsetup{style=ruled,footposition=caption}
+
+\newcommand{\myfig}[2]{
+\begin{figure}[htbp]
+\floatbox[{\capbeside\thisfloatsetup{capbesideposition={right,top},capbesidewidth=4cm}}]{figure}[\FBwidth]
+         {\caption{#2}\label{fig:#1}}
+         {\includegraphics[width=5cm]{#1}}
+\end{figure}
+}
+
+
+%\usepackage{sidecap}
+
+\usepackage{sectsty}
+\usepackage[compact]{titlesec} 
+\allsectionsfont{\color{bl}\scshape\selectfont}
+
+%%%%% Definitions
+% Define a new command that prints the title only
+\makeatletter							% Begin definition
+\def\printtitle{%						% Define command: \printtitle
+    {\color{bl} \centering \huge \sc \textbf{\@title}\par}}		% Typesetting
+\makeatother							% End definition
+
+\title{Computational Neuroscience \\ 
+		\large \vspace*{-10pt} Notes on A. Fairhall / R.P.N. Rao lectures\vspace*{10pt}}
+
+% Define a new command that prints the author(s) only
+\makeatletter							% Begin definition
+\def\printauthor{%					% Define command: \printauthor
+    {\centering \small \@author}}				% Typesetting
+\makeatother							% End definition
+
+\author{%
+	Jérémy Fix \\
+	Jeremy.Fix@Supelec.fr \\
+	\vspace{20pt}
+	}
+
+% Custom headers and footers
+\usepackage{fancyhdr}
+	\pagestyle{fancy}					% Enabling the custom headers/footers
+\usepackage{lastpage}	
+	% Header (empty)
+	\lhead{}
+	\chead{}
+	\rhead{}
+	% Footer (you may change this to your own needs)
+	\lfoot{\footnotesize }
+	\cfoot{}
+	\rfoot{\footnotesize page \thepage\ / \pageref{LastPage}}	% "Page 1 of 2"
+	\renewcommand{\headrulewidth}{0.0pt}
+	\renewcommand{\footrulewidth}{0.4pt}
+
+% Change the abstract environment
+\usepackage[runin]{abstract}			% runin option for a run-in title
+\setlength\absleftindent{30pt}		% left margin
+\setlength\absrightindent{30pt}		% right margin
+\abslabeldelim{\quad}						% 
+\setlength{\abstitleskip}{-10pt}
+\renewcommand{\abstractname}{}
+\renewcommand{\abstracttextfont}{\color{bl} \small \slshape}	% slanted text
+
+
+% Pour gérer les lettrines
+\usepackage{lettrine}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Start of the document
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+%%% Top of the page: Author, Title and Abstact
+\printtitle 
+
+\printauthor
+
+\begin{abstract}
+Notes on the Computational Neuroscience lecture of A. Fairhall / R.P.N. Rao
+\end{abstract}
+
+\tableofcontents
+
+\pagebreak
+
+\section{Introduction \& Basic Neurobiology}
+
+\section{What do Neurons Encode ? Neural Encoding Models}
+
+\section{Extracting information from Neurons: Neural decoding}
+
+Neural decoding refers to infer the stimulus that causes the neural responses we observe.
+
+Given a feature of a stimulus to identify, we can represent the probability that the stimulus belongs to one category along this feature axis. An illustration of the probability of having a stimulus given some evidence is given by the experiment of Britten et al. 1992. In this experiment, Monkey had to decide in which direction random dot patterns were moving. The difficulty of the task varies and is defined by the coherence of the pattern. If the pattern is moving left ward, the monkey receives a reward if it makes a leftward saccade and conversely with rightward motion. If one looks at the distribution 
+
+\section{Information Theory and Neural Coding}
+
+\end{document}

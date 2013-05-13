@@ -501,7 +501,16 @@ Layer 2 representing the features. Now, if we include the very first
 layer with the weights projecting the inputs to the hidden layer, we
 can see it as building the features feeding the logistic
 regression. And the nice thing there is that the features are learned
-through the weights from Layer 1 to Layer 2.
+through the weights from Layer 1 to Layer 2. It may not be completely
+clear that the features we compute that way (the activations of layer
+1) can be arbitrary polynomials but indeed one may demonstrate that if
+we don't restrict ourselves to a single hidden layer, one can
+approximate any function (feedforward neural networks are universal
+approximators) so that feedforward neural networks have at least the
+expressiveness of logistic regression.\\
+
+
+\textbf{Ref pour l'approximateur universel?}
 
 
 

@@ -509,6 +509,35 @@ approximate any function (feedforward neural networks are universal
 approximators) so that feedforward neural networks have at least the
 expressiveness of logistic regression.\\
 
+Now let us consider simple binary operations like and, or, not, xor. We can
+easily write a simple neural network with a single input layer and a
+single output for the and and \emph{or} functions :
+\begin{itemize}
+\item \emph{and} function : $\theta =(-30, 20, 20)$
+\item \emph{or} function : $\theta =(-10, 20, 20)$
+\item \emph{not} function : $\theta =(10, -20)$
+\end{itemize}
+These are both linearly separable problems. The Xor function is not
+linearly separable and one needs to consider at least one hidden layer
+to compute it. To put it simply, we just need to write $x_1 \mbox{xor}
+x_2 = \mbox{or}(\mbox{and}(\mbox{not}(x1),x_2),
+\mbox{and}(x1,\mbox{not}(x_2)))$. The functions not(x1) or x2, as well
+as x1 and not(x2) can be compute with a single layer. These are the
+input to hidden layer connections. Finally, we just connect the hidden
+to the output layer for computing the or function.\\
+
+Before, we were speaking about a simple regression example. An example
+of multi-class classification is given by the LeNet 5 feedforward
+neural network developed by Y. LeCun which he trained for recognizing
+handwritten digits. The trained network is quite unsensitive to scale,
+orientation, and some forms of noise. For multi-class classification,
+we consider an output layer of the size of the number of classes. The
+output $y^{(i)}$ for input $x^{(i)}$ is set to $y^{(i)}_j = \delta(j,
+l^{(i)})$ where $\delta$ is the kronecker symbol and $l^{(i)}$ is the
+class of the input $x^{(i)}$.
+
+
+
 
 \textbf{Ref pour l'approximateur universel?}
 

@@ -424,4 +424,85 @@ Pour la régularisation, une appli dans laquelle on fit un polynôme sur
 des données et on règle dynamiquement la contribution $\lambda$ de la
 régularisation pour voir la forme du modèle appris.\\
 
+
+\section{Neural Networks: Representation}
+
+\textbf{A vérifier : overfitting if we increase the number of features
+  with a constant number of data ?}\\
+
+
+
+Neural networks are the state of the art technique for several machine
+learning problems. To motivate neural networks, let us consider a
+non-linear classification problem. As we saw, we can use logistic
+regression with polynomial features (say $x_1 x_2, x_2^3 x_3,
+..$). However, given the size of our inputs, the size of the feature
+vector may be a polynomial of it which will certainly be quite big and
+increase the tendency to overfitting (if we consider too many features
+relative to the number of the data we have, we can easily encounter
+overfitting). To give on example, if one considers object recognition
+from images of size $50 \times 50$, one obtains images with $n=2500$
+pixels. If we just consider only quadratic terms $x_i x_j$, one gets
+around $3$ million features, the number of features is indeed
+$n^2/2$. One may limit the number of features, but this selection
+is, there, somehow arbitrary. Neural networks are a much better way to
+define non-linear hypotheses than logistic regression with polynomial
+features.\\
+
+
+Neural networks, while originally derived from the desire to mimick
+the brain, is used from an abstract viewpoint in Machine Learning
+where we consider simple massively interconnected entities. Each
+entity receives signal from others, process it locally and transmit a
+signal to other entities. The simple model we consider is a logistic
+unit, which receives inputs denotes $x_i$, computes a weighted sum of
+it and apply a sigmoid transfer function on it. This is nothing more than what
+we saw in the previous section $y = h_\theta(x) = \frac{1}{1 +
+  e^{-\theta^T x}}$. We also add a bias unit to the inputs $x_0 = 1$
+in addition to the signals received from the other neurons $x_i, i
+\geq 1$. In the neural network literature, $\theta$ are called the
+weights. We can build layers of such units and interconnect them. A
+multilayer neural network is shown on fig.\ref{fig:neunet}.
+
+\begin{figure}[htbp]
+\includegraphics[width=0.7\columnwidth]{Figs/neunet.png}
+\caption{\label{fig:neunet} Representation of a feedforward neural
+  network. Capture from the A. Ng lecture.}
+\end{figure}
+
+We will denote $a_i^{(j)}$ the activation of the i-th unit of j-th
+layer. We denote $\theta^{(j)}$ the matrix of weights from layer $j$
+to layer $j+1$\footnote{We here consider only feedforward neural
+  networks were the connections always go from layer $j$ to layer
+  $j+1$}. The activation is computed according to~:
+\begin{equation}
+\begin{cases}
+\forall i \geq 1, \forall j>1, a_i^{(j)} &= g(z_i^{(j)})\\
+\forall i \geq 1, \forall j>1, z_i^{(j)} &= \sum_k \theta_k^{(j-1)} a_k^{(j-1)}\\
+\forall i \geq 1, a_i^{(1)} &= x_i\\
+\forall j, a_0^{(i)} &= 1
+\end{cases}
+\end{equation}
+These equations tell nothing more than that the first neuron is the
+bias for the next layer, the activations $a_i^{(1)}$ of the first layer equal our
+inputs and each neuron in a subsequent layer computes its activation $a_i^{(j)}$
+as a sigmoid of a weighted sum of the activations of the previous
+layer $a_k^{(j-1)}$. A vectorized notation for computing the activations of layer
+$j+1$ is simply $a^{(j+1)} = g(\theta^{(j)} . a^{(j)})$ where
+$\theta^{(j)}$ is a matrix of size $|L_{j+1}| \times |L_{j}|$ with
+$|L_j|$ the number of neurons in layer $j$ (the bias being
+included). For regression, the last layer contains a single neuron of
+which the activation, if unfolded, is a function of the input
+$x$. Computing the activations in a layer-wise manner from the very
+first layer to the output is called the forward propagation. If we
+take a closer look to the 3-layers neural network depicted above, the
+hidden to output layer is nothing more than a logistic regression with
+Layer 2 representing the features. Now, if we include the very first
+layer with the weights projecting the inputs to the hidden layer, we
+can see it as building the features feeding the logistic
+regression. And the nice thing there is that the features are learned
+through the weights from Layer 1 to Layer 2.
+
+
+
 \end{document}

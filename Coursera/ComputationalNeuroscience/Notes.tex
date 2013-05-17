@@ -142,27 +142,257 @@ Notes on the Computational Neuroscience lecture of A. Fairhall / R.P.N. Rao
 
 \section{Extracting information from Neurons: Neural decoding}
 
-Neural decoding refers to infer the stimulus that causes the neural responses we observe.
+Neural decoding refers to infer the stimulus that causes the neural
+responses we observe.
 
-Given a feature of a stimulus to identify, we can represent the probability that the stimulus belongs to one category along this feature axis. An illustration of the probability of having a stimulus given some evidence is given by the experiment of Britten et al. 1992. In this experiment, Monkey had to decide in which direction random dot patterns were moving. The difficulty of the task varies and is defined by the coherence of the pattern. If the pattern is moving left ward, the monkey receives a reward if it makes a leftward saccade and conversely with rightward motion. If one looks at the distribution of the firing rates in two cases, when the monkey made a saccade toward the preferred direction and when the monkey made a saccade toward the null direction .....
-
-
-We introduce $P(r / +)$ the probability of having response $r$ given a stimulus is moving in the preferred direction of the neuron and $P(r / -)$ the probability of having response $r$ given a stimulus is moving in the null direction. Decision takes place when the response is larger than a threshold $z$ to be defined later. We call \emph{false alarms} $P( r \geq z | -)$ i.e. the probability that the neurons fire strongly while the stimulus was moving in the null direction. We call \emph{good calls} $P(r \geq z | +)$ i.e. the probability that the neuron fires strongly while the stimulus is moving in the preferred direction (a good guess). We set the threshold $z$ in order to maximize the probability to be correct, i.e. $P(+) P(r \geq z | +) + P(-) ( 1 - P( r \geq z | -))$ i.e. the probability to fire above threshold when the stimulus is moving in the preferred direction plus the probability to fire below threshold when the stimulus is moving in the null direction. The right choice of the threshold is such that $P(r = z | -) = P(r = z | +)$. The conditional probabilities $P(r / -)$, $P(r / +)$ are called the likelihood. \\
-
-The likelihood ratio is the most efficient statistic, in that it has the most power for a given size (Neyman-Pearson lemna). The likelihood ratio being defined as $p(r/+)/p(+/-)$ and $z$ defined such that $p(r/+)/p(+/-) > 1$.\\
-
-If we decode the neuronal response and compare it to the behavioral response, they match. Therefore, if there is a so close correspondence between neuronal response (at a single cell level?) and behavior, why do we need so many neurons ? (to build the response????)\\
-
-We can consider the likelihood ratio over time. Suppose we have two hypothesis for a stimulus: it might be a tiger or the wind in a bush (breeze). Now take the log of the likelihood ratio : $l(s) = p(s / tiger) / p(s / breeze)$. Given a sample $s$, we can compute the likelihood ratio or its log. If it sounds like the breeze, this makes the likelihood ratio smaller than $1$ and its log negative. As we accumulate samples through time, our guess will fluctuate toward the breeze or the tiger until we reach a threshold indicating we are absolutely confident in our guess. Such a process of accumulated evidence was demonstrated by Kiani(2006). It is similar to Britter(1992) experiment but the monkey now had the time it wants to respond (there is no pressure to answer quickly). Neurons in LIP were recorded during the experiment. Depending on the coherence, we observe different ramps with which the responses are building up (faster when the coherence is larger, slower when the coherence is smaller). When aligned with saccade onset, the responses peak at the small value whatever the coherence.\\
-
-For the tiger/breeze example, we must consider the priors $p(+), p(-)$ which scale the conditionals for taking our decision. An example of including the priors is given by the recordings of Rieke of photoreceptors. The response of photoreceptors is very noisy and, when it receives a photon, is increasing suddenly. One might be interested in the probability of having light given the signal. The priors allow to adjust what is considered as a normal situation for the signal and to decrease false alarms and increase good calls.\\
-
-But priors are not the whole story. We might also include cost. The probability of deciding an action might also depend on how costly it is.\footnote{J'ai un peu le sentiment qu'on mélange beaucoup de chose : le fait de reconnaitre qu'une action devrait être engagée et le coût des actions engageables...}. We incorporate the cost by considering penalties associated with wrong choices. Two losses are therefore considered $\mbox{Loss}_- = \mbox{L}_- P(+/r)$ i.e. the cost of choosing minus while it was a plus and $\mbox{Loss}_+ = \mbox{L}_+ P(-/r)$ i.e. the cost of choosing plus while it was minus. We now act when we can earn more that what we can loose.  This leads to a new criterion for a likelihood ratio test.
-
+Given a feature of a stimulus to identify, we can represent the
+probability that the stimulus belongs to one category along this
+feature axis. An illustration of the probability of having a stimulus
+given some evidence is given by the experiment of Britten et
+al. 1992. In this experiment, Monkey had to decide in which direction
+random dot patterns were moving. The difficulty of the task varies and
+is defined by the coherence of the pattern. If the pattern is moving
+left ward, the monkey receives a reward if it makes a leftward saccade
+and conversely with rightward motion. If one looks at the distribution
+of the firing rates in two cases, when the monkey made a saccade
+toward the preferred direction and when the monkey made a saccade
+toward the null direction .....
 
 
+We introduce $P(r / +)$ the probability of having response $r$ given a
+stimulus is moving in the preferred direction of the neuron and $P(r /
+-)$ the probability of having response $r$ given a stimulus is moving
+in the null direction. Decision takes place when the response is
+larger than a threshold $z$ to be defined later. We call \emph{false
+  alarms} $P( r \geq z | -)$ i.e. the probability that the neurons
+fire strongly while the stimulus was moving in the null direction. We
+call \emph{good calls} $P(r \geq z | +)$ i.e. the probability that the
+neuron fires strongly while the stimulus is moving in the preferred
+direction (a good guess). We set the threshold $z$ in order to
+maximize the probability to be correct, i.e. $P(+) P(r \geq z | +) +
+P(-) ( 1 - P( r \geq z | -))$ i.e. the probability to fire above
+threshold when the stimulus is moving in the preferred direction plus
+the probability to fire below threshold when the stimulus is moving in
+the null direction. The right choice of the threshold is such that
+$P(r = z | -) = P(r = z | +)$. The conditional probabilities $P(r /
+-)$, $P(r / +)$ are called the likelihood. \\
 
+The likelihood ratio is the most efficient statistic, in that it has
+the most power for a given size (Neyman-Pearson lemna). The likelihood
+ratio being defined as $p(r/+)/p(+/-)$ and $z$ defined such that
+$p(r/+)/p(+/-) > 1$.\\
+
+If we decode the neuronal response and compare it to the behavioral
+response, they match. Therefore, if there is a so close correspondence
+between neuronal response (at a single cell level?) and behavior, why
+do we need so many neurons ? (to build the response????)\\
+
+We can consider the likelihood ratio over time. Suppose we have two
+hypothesis for a stimulus: it might be a tiger or the wind in a bush
+(breeze). Now take the log of the likelihood ratio : $l(s) = p(s /
+tiger) / p(s / breeze)$. Given a sample $s$, we can compute the
+likelihood ratio or its log. If it sounds like the breeze, this makes
+the likelihood ratio smaller than $1$ and its log negative. As we
+accumulate samples through time, our guess will fluctuate toward the
+breeze or the tiger until we reach a threshold indicating we are
+absolutely confident in our guess. Such a process of accumulated
+evidence was demonstrated by Kiani(2006). It is similar to
+Britter(1992) experiment but the monkey now had the time it wants to
+respond (there is no pressure to answer quickly). Neurons in LIP were
+recorded during the experiment. Depending on the coherence, we observe
+different ramps with which the responses are building up (faster when
+the coherence is larger, slower when the coherence is smaller). When
+aligned with saccade onset, the responses peak at the small value
+whatever the coherence.\\
+
+For the tiger/breeze example, we must consider the priors $p(+), p(-)$
+which scale the conditionals for taking our decision. An example of
+including the priors is given by the recordings of Rieke of
+photoreceptors. The response of photoreceptors is very noisy and, when
+it receives a photon, is increasing suddenly. One might be interested
+in the probability of having light given the signal. The priors allow
+to adjust what is considered as a normal situation for the signal and
+to decrease false alarms and increase good calls.\\
+
+But priors are not the whole story. We might also include cost. The
+probability of deciding an action might also depend on how costly it
+is.\footnote{J'ai un peu le sentiment qu'on mélange beaucoup de chose
+  : le fait de reconnaitre qu'une action devrait être engagée et le
+  coût des actions engageables...}. We incorporate the cost by
+considering penalties associated with wrong choices. Two losses are
+therefore considered $\mbox{Loss}_- = \mbox{L}_- P(+/r)$ i.e. the cost
+of choosing minus while it was a plus and $\mbox{Loss}_+ = \mbox{L}_+
+P(-/r)$ i.e. the cost of choosing plus while it was minus. We now act
+when we can earn more that what we can loose.  This leads to a new
+criterion for a likelihood ratio test.\\
+
+Usually, many neurons participate to the coding of an information. We
+now turn to decoding of from population activities. We start with an
+example of the cricket [Jacobs, 2008]. The cricket has hairs on the
+abdomen that are sensitive to the wind velocity. The cricket cercal
+cells have cosine receptive fields centered on a preferred direction
+denoted $s_a$. The firing rate of these cells follow [Theunissen,1991]~:
+\begin{equation}
+\frac{f(s)}{r_{max}}_a = [cos(s - s_a]_+
+\end{equation}
+The response of the neuron is proportional to the projection of the
+wind velocity vector on the preferred direction of the neuron $c_a$. We can
+take the individual responses of the neurons and compute the
+population vector as~:
+\begin{equation}
+\vec{v}_p = \sum_{a=1}^{4} (\frac{r}{r_{max}}) \vec{c_a}
+\end{equation}
+We here have $4$ basis vectors $\vec{c_a}$ equally arranged around the circle of
+unit radius. This might seems to be overcomplete but as we take the
+positive part of the cosine, each neuron is only responsive for an
+half-plane. We can compute the population vector for other populations
+of neurons like in M1. In the motor cortex, we also observe individual
+responses with cosine tuning~:
+\begin{equation}
+\frac{<r> - r_0}{r_{max}} = \frac{f(s) - r_0}{r_{max}} = cos(s - s_a)
+\end{equation}
+
+The population vector reads~:
+\begin{equation}
+\vec{v}_p = \sum_a \frac{r - r_0}{r_{max}} \vec{c_a}
+\end{equation}
+For sufficiently large number of neurons in the population~:
+\begin{equation}
+<\vec{v}_p> = \sum_a (\vec{v} \vec{c_a}) \vec{c_a}
+\end{equation}
+which is parallel to the direction of the arm movement.\\
+
+The population vector is one technique of decoding but that appears to
+be quite specific to cosine tuning. We try to derive a more general
+formulation of population decoding. This formulation is based on the
+Bayes law~:
+\begin{equation}
+p[s / r] = \frac{p(r/s)p(s)}{p(r)} = \frac{p(r/s)p(s)}{\int_s ds p(r/s)p(s)}
+\end{equation}
+In the Bayesian framework, $p(r/s)$ is the likelihood function which
+is the probability of having response $r$ given the stimulus $s$ is
+presented; $p(s)$ is the a priori distribution over the stimuli and
+$p(r)$ is the marginal distribution which normalizes the
+probabilities. $p(s/r)$ is then the a posteriori distribution which is
+the probability of having presented stimulus $s$ if we observe the
+response $r$. Indeed, this is what we seek to compute when decoding
+responses. We focus on two of the distributions, the likelihood and
+the a posteriori distribution and derives two general decoding
+techniques. \textbf{Maximum likelihood} (ML) seeks $s*$ that maximizes the
+likelihood $p(r/s)$. \textbf{Maximum a posteriori} (MAP) seeks $s*$ which
+maximizes the a posteriori distribution $p(s/r)$. These two methods
+give different estimates as the MAP is biased by the prior.\\
+
+
+\textbf{Question} : quels sont les avantages de l'une ou l'autre des
+max likelihood ou maximum a posteriori. Genre le plus précis mais peut
+être nécessitant plus d'info ?\\
+
+Let us consider an example of a population of neurons coding some
+stimulus $s$. Assume that the tuning curves are gaussians centered on
+some preferred values of the stimulus $s_i, i \in [1..N]$. We assume
+\textbf{independence} in the responses and \textbf{poisson
+  firing}. The response of the neurons read~:
+\begin{equation}
+f_a(s) = r_{max} \exp(-\frac{s - s_a}{2 \sigma_a^2})
+\end{equation}
+We also assume a good coverage in the sense that there are enough
+neurons to encode any stimulus value and that they are equally
+spaced~:$\sum_a f_a(s)$ is constant $\forall s$. If we record the
+response of a neuron we usually have a lot of variability. However, if
+we average the responses to several presentations of the stimuli, we
+may have the gaussian tuning curve. With a Poisson neuron, the
+probability of having $k$ spikes during a time interval $\Delta t$ is
+given by $e^{-r\Delta t} \frac{(r \Delta t)^k}{k!}$. The average
+firing rate being $r$, its standard deviation $\sqrt{r}$.\\
+
+\textbf{TODO} : se revoir les distributions de Poisson.\\
+
+Suppose a neuron has response $r_a$ given a stimulus $s$. We want to
+compute the probability of having this response given our assumption
+of Poisson neurons. \\
+\begin{eqnarray}
+P_T(r_a/s) = \frac{(f_a(s) T)^{r_a T}}{(r_aT)!} \exp(-f_a(s) T)
+\end{eqnarray}
+We denote $\vec{r}$ the vector of all the responses $r_1, r_2,
+... r_N$. As we assumed independence, the probability of all the
+responses is just the product of the individual probabilities~:
+\begin{equation}
+P_T(\vec{r}/s) = \prod_{i=1}^N P_T(r_i/s) = \prod_{i=1}^N  \frac{(f_i(s)
+  T)^{r_i T}}{(r_i T)!} \exp(-f_i(s) T)
+\end{equation}
+We now have the expression of the likelihood. Applying the ML
+estimator, we seek the stimulus $s*$ which maximizes it which is
+equivalent to maximizing the log likelihood. The log likelihood has a
+much easier expression and reads~:
+\begin{eqnarray}
+\log(P_T(\vec{r}/s)) &=& \sum_i [r_i T \log(f_a(s) T) - f_a(s)T -
+\log((r_a T)!)]
+\end{eqnarray}
+To find the maximum, we derive the log likelihood.
+\begin{eqnarray}
+\frac{d\log(P_T(\vec{r}/s))}{ds} = \sum_i \frac{d f_i(s)}{ds}\frac{r_i
+T}{f_i(s)}
+\end{eqnarray}
+The term $\log((r_a T)!)$ gets dropped because of its independence on
+$s$. The other term $\sum_if_a(s)T$ also gets dropped as we assumed
+good coverage, i.e. the sum of the responses is constant whatever the
+stimulus. Setting the derivative to zero, one gets~:
+\begin{eqnarray}
+\frac{d\log(P_T(\vec{r}/s))}{ds}(s*) = 0 \rightarrow \sum_i \frac{d f_i(s*)}{ds}\frac{r_i
+T}{f_i(s*)} = 0
+\end{eqnarray}
+We supposed a gaussian tuning curve, i.e. $f(s) = A \exp(\frac{-(s -
+  s_a)^2}{2 \sigma_a^2})$. Therefore $\frac{f'(s)}{f(s)} =
+-\frac{s-s_a}{\sigma_a}^2$, which simplifies our expression for
+finding $s*$~:
+\begin{equation}
+\sum_i -r_i T \frac{s*-s_i}{\sigma_i^2} = 0 \rightarrow s* =
+\frac{\sum_i \frac{r_i s_i}{\sigma_i^2}}{\sum_i \frac{r_i}{\sigma_i^2}}
+\end{equation}
+which is a kind of population vector with the weights being normalized
+by the variance of the responses. Indeed, if all the variances are the
+same, the maximum likelihood decoding is nothing more than the
+population vector.\\
+
+To compute the MAP estimator, we need to compute the a posteriori
+distribution.\\
+\begin{equation}
+\log(p(s/r)) = \log(p(r/s)) + \log(p(s)) - \log(p(r))
+\end{equation}
+If we inject our expressions of the log likelihood, putting in $...$
+the terms that will get dropped when computing the derivative with
+respect to $s$, we get~:
+\begin{equation}
+\log(p(s/r)) = T \sum_i r_i \log(f_i(s)) + \log(p(s)) + ...
+\end{equation}
+Setting the derivative to $0$, we get an expression somehow similar to
+the ML estimator, except that we now have a term depending on the
+prior~:
+\begin{equation}
+\sum_i r_i \frac{f_i'(s*)}{f_i(s*)} + \frac{p'(s)}{p(s)} = 0
+\end{equation}
+
+Assuming a Gaussian prior of mean $s_{\mbox{prior}}$ and standard
+deviation $\sigma_{\mbox{prior}}$, we finally get the MAP estimate~:
+\begin{equation}
+s* = \frac{T \sum_i \frac{r_i s_i}{\sigma_i^2} +
+  \frac{s_{\mbox{prior}}}{\sigma_{\mbox{prior}}^2}}{T\sum_i
+  \frac{r_i}{\sigma_i^2} + \frac{1}{\sigma_{\mbox{prior}}^2}}
+\end{equation}
+The priori therefore shifts the estimate. If we consider a priori
+close to a dirac, very peaky around the mean, the priori will strongly
+bias the estimate whatever the responses. If, on the contrary, the
+prior is flat $\sigma_{\mbox{prior}} \rightarrow \infty$, the
+influence of the prior completely disappears and we get back to the ML
+estimator.\\
+
+These estimators have limitations. Especially, they do need
+independence in the responses while correlation of the responses is
+critical as we will see later on.
 
 \section{Information Theory and Neural Coding}
+
+
 
 \end{document}

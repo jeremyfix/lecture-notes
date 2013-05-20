@@ -389,7 +389,64 @@ estimator.\\
 
 These estimators have limitations. Especially, they do need
 independence in the responses while correlation of the responses is
-critical as we will see later on.
+critical as we will see later on.\\
+
+\subsection{Reading minds: stimulus reconstruction}
+
+In the previous parts, we were interested in decoding a stimulus
+$\star{s}$ that is held fixed during recording. We now turn to
+decoding a time varying stimulus $\star{s}(t)$.\\
+
+We look for an estimator $s_{\mbox{bayes}}$ that gives the best
+approximation of stimulus $s$ when we observe $r$. To do so, we
+introduce a cost function $L(s, s_{\mbox{bayes}})$ and make use of it
+to introduce a criteria to be minimized~:
+\begin{equation}
+J = \int ds L(s, s_{\mbox{bayes}}) p[s/r]
+\end{equation}
+One example of such a cost function is the least square cost $L(s,
+s_{\mbox{bayes}}) = (s - s_{\mbox{bates}})^2$. To minimize the cost
+$J$, we compute its derivative relative to $s_{\mbox{bayes}}$. Using
+the least square, this reads~:
+\begin{eqnarray}
+\frac{dJ}{d s_{\mbox{bayes}}} &=& 2 \int ds(s - s_{\mbox{bayes}})
+p[s/r]\\
+&=& 0 \rightarrow s_{\mbox{bayes}} = \int ds p[s/r] s
+\end{eqnarray}
+since $\int ds p[s/r] = 1$. If the response is a single spike, we
+recognize the spike triggered average.\\
+
+There have been some experiments with LGN recordings of the cat to
+decode what the cat actually sees (Dan Yang). There are also some
+experiments in 2011 by Nishimoto on reconstruction from fMRI.\\
+
+
+\subsection{Fred Rieke, guest lecture on the retina}
+
+Imagine a lot of rods, few of them absorbing some photons. We
+therefore get an array of very noisy detectors. Averaging is not a
+good strategy, we should rather select and weight the contribution of
+each detector. We seek to set up a threshold above which rods will be
+kept, and supposed to be excited by photons while below the threshold
+the rods will be considered as generating noise. We can therefore
+introduce two probability distributions which is, for rods generating
+noise and for rods generating some signal, the probability
+distribution over the amplitude of the signal. This selection of good
+vs. noisy rods should occur very early in the retina, at bipolar cell
+layer otherwise we might already average out the signal. Indeed,
+recordings from rod bipolar cells support the idea of a thresholding
+nonlinearity. If we plot this non-linearity function of the amplitude
+of the signal, it is very sharp and the threshold and somehow higher
+than what we would expect from a maximum likelihood. Indeed, one
+should also introduce prior probabilities to generate noise (99.9
+percent) or signal. How single photon responses are reliably
+transmitted (by filtering out most of the noisy responses) is one of
+the challenges but there are also other aspects before and after this
+transmission such as the transduction of single photon by rods, as
+well as how the signal is then transmitted through the optic nerve to
+the brain.
+
+
 
 \section{Information Theory and Neural Coding}
 

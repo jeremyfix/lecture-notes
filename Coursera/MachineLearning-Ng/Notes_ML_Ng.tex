@@ -641,8 +641,89 @@ To design a machine learning system, one should
 \item error analysis : check which examples are misclassified from the cross validation set and why they are misclassified (what is particular about them)
 \end{enumerate}
 
-In particular, error analysis is really critical as it will really help in adjusting the features to use. For spam classification, a stemming software (e.g. Porter Stemmer) can be usefull for deciding whether or not some variations of the same word should be considered the same word. In this situation, there is no other solutions than trying different solutions and comparing their performances with respect to the cross-validation and test errors.
+In particular, error analysis is really critical as it will really
+help in adjusting the features to use. For spam classification, a
+stemming software (e.g. Porter Stemmer) can be usefull for deciding
+whether or not some variations of the same word should be considered
+the same word. In this situation, there is no other solutions than
+trying different solutions and comparing their performances with
+respect to the cross-validation and test errors.
+
+\subsection{Error metrics for skewed classes}
+
+An important caveat can lead us to misinterpret the test
+error. Imagine we train a classifier for deciding whether or not a
+patient has a cancer. If we get a test error of 1\% we might say the
+learning algorithm is doing pretty well. However, if the data are such
+that only 0.5 \% of the patients have a cancer, the 1\% is actually
+pretty high. We speak about \textbf{skewed classes} when the positive and
+negative examples of the data are really unbalanced as it was the case
+for the cancer data. Indeed, in such a situation, it is pretty easy to
+design an efficient algorithm with respect to the test error: just
+attribute the label of the largest class ! In such a situation, the usual
+\textbf{classification error on the test set is not a sound error
+  metric}. We rather introduce other measures : precision, recall,
+accuracy, QUATIREME ELEMENT !!!! Suppose we work on a binary
+classification task, we then introduce true/false positives and
+true/false negatives according to the following table~:
+\begin{tabular}{cccc}
+& & Actual class & \\
+& & 1            & 0 \\
+Predicted class & 1 & True positive & False positive \\
+                & 0 & false negative & true negative \\
+\end{tabular}
+
+The four measures are then defined as~:
+\begin{eqnarray}
+\mathrm{precision} &=& \frac{\mathrm{true\ positives}}{\mathrm{\#predicted\
+  positive}} = \frac{\mathrm{true\ positives}}{\mathrm{true\
+    positives}+\mathrm{false\ positives}}\\
+\mathrm{recall} &=& \frac{\mathrm{true\ positives}}{\mathrm{\#actual\
+  positives}} = \frac{\mathrm{true\ positives}}{\mathrm{true\
+    positives}+\mathrm{false\ negatives}}
+\end{eqnarray}
+The \textbf{precision} indicates the fraction of the patients that are
+positives among the patients classified as positives\footnote{by
+  convention, when faced a classification problem with skewed classes,
+the rare cases are the positive ones}. The
+\textbf{recall} indicates the fraction of positive examples that were
+correctly classified as positive. If we consider our example where the
+algorithm classifies all the patients as not having a cancer, both the
+recall and precision will be zero.
+
+\subsection{Trading off precision and recall and $F_1$ score}
+
+If we continue with our example of cancer classification and check the
+influence of the decision threshold (say with a hypothesis
+$0 \leq h_\theta(x) \leq 1$, we predict $1$ if $h_\theta(x) \geq T$
+and $0$ if $h_\theta(x) < T$). If $T = 0.5$ we have a certain
+precision and recall. If \textbf{we increase $T$}, say $T=0.9$, we will be much
+more selective and much more confident about the examples that we
+classify as positives. Therefore, the fraction of examples that are
+really positives among the ones that we classify as positives will be
+higher, then a \textbf{higher precision}. However, as much less examples are
+classified as positives, the \textbf{recall will be lower}. If on the
+opposite, we decrease the threshold, say $T=0.3$, we will be more
+conservative as more than necessary patients will be classified as
+positive, in which case we will have a \textbf{lower precision} and \textbf{a
+higher recall}. Usually, there is a trade off between precision and
+recall. Now, if we compare several algorithms (or the same with
+different meta-parameters), they will have different precision $P$ and
+recall $R$ values. To compare them, we introduce the $F_1$ score. As
+we saw previously, some simple algorithms (like always assigning the
+same class) is not a usefull classifier. Whether always saying ``class
+0'' or ``class 1'', these algorithms will have whether high precision
+and low recall or low precision and high recall. If we compute the
+mean of precision and recall, it will be the same in the two
+situations as well as the same as an algorithm which has equal
+precision and recall. Therefore, the mean is not discriminative enough
+for deciding which algorithm performs best. The $F_1 \in [0,1]$ score is rather
+defined as~:
+\begin{equation}
+F = 2 \frac{P R}{P + R}
+\end{equation}
 
 
+\subsection{Data for machine learning}
 
 \end{document}

@@ -10,8 +10,8 @@
 \usepackage[T1]{fontenc}
 \usepackage[bitstream-charter]{mathdesign}
 
-\usepackage[utf8]{inputenc}							% Input encoding
-\usepackage{amsmath}									% Math
+\usepackage[utf8]{inputenc}% Input encoding
+\usepackage{amsmath}	% Math
 
 \usepackage{xcolor}
 \definecolor{bl}{rgb}{0.0,0.2,0.6} 
@@ -540,6 +540,108 @@ class of the input $x^{(i)}$.
 
 
 \textbf{Ref pour l'approximateur universel?}
+
+\section{10}
+
+In this section, few advices are given so as to know on which parameters one must play in order to improve the performances of the machine learning algorithm.\\
+
+For example, when we test an hypothesis and find that it performs very badly on new unknown data, there are indeed various options one may be tempted to try, among which :
+\begin{itemize}
+\item get more training examples, it will probably better constrain the optimization of the hypothesis
+\item try smaller sets of features to avoid overfitting
+\item try getting additional features
+\item try adding polynomial features
+\item try decreasing or increasing the regularization parameter $\lambda$
+\end{itemize}
+Instead of trying one of these options at random, we can diagnose what is going wrong with our algorithm. One possibility to diagnose how an hypothesis performs is, in low dimension (up to 3), to plot the decision boundary for classification or the hypothesis directly for regression. However, in higher dimensions, this is not possible. \\
+
+\subsection{Training set/Test set and error measures}
+We would rather split the dataset in (at least) two datasets : a \textbf{training set} (70\% of the data) and a \textbf{test set} (30 \% of the data).\footnote{be sure that these sets are made of random samples of the datasets to avoid training on a specific region of the space while testing on another non-overlapping region}. Then we optimize the parameters on the training set and measure the generalization error on the test set. For classification problems, one may also measure the misclassification error~:
+\begin{equation}
+\mbox{err}(h_\theta(x), y) = \begin{cases}
+1 & \mbox{ if } h_\theta(x) \geq 0.5, y = 0\\
+  & \mbox{ or } h_\theta(x) < 0.5, y = 1\\
+0 & \mbox{ otherwise} 
+\end{cases}
+\end{equation}
+The test classification error is then just the mean over the test set of the misclassification error above which represents the proportion of the test set that is misclassified.
+
+\subsection{Model selection and train/validation/test sets}
+
+As we know already, the training error alone is not an appropriate measure for evaluating the performances of an hypothesis on unseen data since we might be overfitting. Instead, we should use the test set error. Suppose we wish to select among several polynomial hypothesis one that performs better. To do such a model selection, we will compare the test set errors and select the model with the lowest test error; However, to report the generalization ability of the model that we selected, we should use additional data as using the test set might overestimate the generalization error of the model (the degree of polynomial was indeed selected so that the test set error is decreased). Therefore, we should split the dataset into three pieces : \textbf{the training set} (60\%), \textbf{the cross-validation (cv) or validation set} (20\%) and \textbf{the test set} (20\%):
+\begin{itemize}
+\item the training set is used to optimize the parameters of the models
+\item the test set is used for selecting among the various that we have trained
+\item the validation set is used to estimate the generalization error of the selected model
+\end{itemize}
+
+\subsection{Bias/variance issues}
+
+High bias issue is when the hypothesis is not sufficiently complex (underfit) while high variance is when the hypothesis is too complex (overfit). To better appreciate these issues, let us consider the case of polynomial hypothesis and plot both the training and validation errors as function of the degree of the polynomial (fig.~\ref{fig:crossvalidation_training_errors}). \\
+
+As we increase the degree of the polynomial, we expect the training error to decrease as the model is more and more complex and we can overfit the training set more easily with higher degrees. The cross validation error will usually start as high as the training error, decrease and, then , at some point, increase as we overfit the training set and impair the generalization ability of the hypothesis.\\
+
+\begin{figure}[htbp]
+\includegraphics[width=0.5\columnwidth]{./Figs/crossvalidation_training_errors.png}
+\caption{\label{fig:crossvalidation_training_errors}Typical curves of training and validation errors function of the degree of a polynomial hypothesis}
+\end{figure}
+
+Detecting whether we encounter a high variance or high bias problem is critical as we will not behave the same way in the two conditions. A high bias means a model that is not enough complex such that it cannot even fit the training set properly. A high variance means a model that is too complex so that it certainly fits perfectly the training set but performs poorly on the test set.
+
+\begin{tabular}{|c|c|c|c|}
+                &      & Validation error &      \\
+                &      & Low              & High \\
+\hline
+Training error  & Low  & Good             & High variance \\
+                & High &  -               & High bias \\
+\end{tabular}
+
+
+\subsection{Regularization and bias variance}
+
+Varying the regularization parameter will affect the bias/variance. A very large parameter will penalize high values, leading to small parameters, leading to a high bias (fig.~\ref{fig:bias_variance_regularization}). If the regularization parameter is too small, say absent, a model that is too complex will not be penalized and we will probably run into high variance issues. Therefore, the regularization parameter must be correctly adjusted. This parameter must be choosen empirically, by testing different values for this parameter and checking both the training and cross validation errors. We then peak out the parameter giving a the lowest cross validation error and then evaluate the true performances on the test set.
+
+
+\begin{figure}[htbp]
+\includegraphics[width=0.5\columnwidth]{./Figs/bias_variance_regularization.png}
+\caption{\label{fig:bias_variance_regularization} Skecthes of how the training and cross validation errors usually evolve as a function of the regularization parameter.}
+\end{figure}
+
+We can also plot the training and cross validation errors as functions of the number of training examples (\textbf{the learning curves}). The training error usually increases as you use a larger training set as it is pretty easy to fit perfectly few examples while more complicated to fit more. The cross validation error will usually decrease as you more easily overfit small training set and you generalize better if you use more training examples that better constrain the hypothesis.
+
+\begin{itemize} 
+\item if an algorithm is suffering from \textbf{high bias} (e.g. the hypothesis is not complex enough), getting \textbf{more training data will not help much}
+\item if an algorithm is suffering from \textbf{high variance}, getting \textbf{more training data will help}
+\end{itemize}
+
+Given the previous observations, below is a list of options to consider depending on whether we face a high bias or high variance issue~:
+\begin{itemize}
+\item Getting more training examples : will help fixing high variance problems
+\item try smaller sets of features: will help fixing high variance problems
+\item try getting additional features: will usually help fixing high bias
+\item try adding polynomial features : might help fixing high bias
+\item try decreasing $\lambda$ for fixing high gbias, increasing $\lambda$ for fixing high variance
+\end{itemize}
+
+\section{Machine learning system design}
+
+\subsection{Prioritizing what to work on : Spam classification example}
+
+This section deals with various aspects of designing a machine learning system using the example of designing a spam classifier.\\
+
+
+The first step is to decide what to use for the features. For example, we might use $100$ words that we consider might be indicative of the spam/non-spam category or to actually pike the words appearing the most frequently in the emails. The feature vector will then be a binary vector indicating whether a word appears or not in the email to classify. Some specific sophisticated features might also be added (e.g. from the header of the email, the body, checking for mispelled words, ...).\\
+
+\subsection{Error analysis}
+
+To design a machine learning system, one should 
+\begin{enumerate}
+\item start with a simple, quickly to implement, (dirty) algorithm and test it on a cross validation set
+\item plot learning curves to decide whether we should focus on more data, more features, ...
+\item error analysis : check which examples are misclassified from the cross validation set and why they are misclassified (what is particular about them)
+\end{enumerate}
+
+In particular, error analysis is really critical as it will really help in adjusting the features to use. For spam classification, a stemming software (e.g. Porter Stemmer) can be usefull for deciding whether or not some variations of the same word should be considered the same word. In this situation, there is no other solutions than trying different solutions and comparing their performances with respect to the cross-validation and test errors.
 
 
 

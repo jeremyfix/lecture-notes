@@ -627,10 +627,18 @@ Given the previous observations, below is a list of options to consider dependin
 
 \subsection{Prioritizing what to work on : Spam classification example}
 
-This section deals with various aspects of designing a machine learning system using the example of designing a spam classifier.\\
+This section deals with various aspects of designing a machine
+learning system using the example of designing a spam classifier.\\
 
 
-The first step is to decide what to use for the features. For example, we might use $100$ words that we consider might be indicative of the spam/non-spam category or to actually pike the words appearing the most frequently in the emails. The feature vector will then be a binary vector indicating whether a word appears or not in the email to classify. Some specific sophisticated features might also be added (e.g. from the header of the email, the body, checking for mispelled words, ...).\\
+The first step is to decide what to use for the features. For example,
+we might use $100$ words that we consider might be indicative of the
+spam/non-spam category or to actually pike the words appearing the
+most frequently in the emails. The feature vector will then be a
+binary vector indicating whether a word appears or not in the email to
+classify. Some specific sophisticated features might also be added
+(e.g. from the header of the email, the body, checking for mispelled
+words, ...).\\
 
 \subsection{Error analysis}
 
@@ -725,5 +733,79 @@ F = 2 \frac{P R}{P + R}
 
 
 \subsection{Data for machine learning}
+
+Banko and Brill 2001 worked on the problem of predicting a word in a set of confusable
+words. They compared the performance of four algorithms: Perceptron,
+Winnow, Memory-based, Naïve bayes. They measured the performance of
+these algorithms varying the training set size. It appears that all
+the algorithms improved with the training set size but as the dataset
+get larger and larger, three of them were better than the last (Memory
+based). Collecting a larger dataset is particularly useful if the
+features bring enough information to predict the output (e.g. ``Can a
+human expert confidently predict the output?''). Using a very large
+training set allow to consider \emph{complex} models (which might lead
+to high variance with a small dataset) without falling into an overfit issue.
+
+
+\section{Support vector machines}
+
+We already saw previously various supervised learning algorithms
+(namely logistic regression, neural networks). We now turn on to
+another learning algorithm: the Support Vector Machine (SVM).
+
+\subsection{Optimization objective}
+
+The objective function for SVM reads~:
+\begin{equation}
+J(\theta) = C \sum_{i=1}^m y^{(i)} \mathrm{cost}_1(\theta^T
+x^{(i)}) + (1-y^{(i)}) \mathrm{cost}_0(\theta^T x^{(i)}) +
+\frac{1}{2} \sum_{j=1}^n \theta_j^2
+\end{equation}
+It is just the cost function of logistic regression where :
+\begin{enumerate}
+\item we dropped
+the normalization term $1/m$ (which does not change the position of
+the optimum) ,
+\item replaced $-\log(h_\theta(x^{i})),
+-\log(1-h_\theta(x^{(i)}))$ by $\mathrm{cost}_1(\theta^T x^{(i)}),
+\mathrm{cost}_0(\theta^T x^{(i)})$,
+\item and moved the regularization term on the first member in the
+  cost function (again, this does not change the optimization problem
+  drastically, it is just a scaling factor).
+\end{enumerate}
+
+\textbf{PLOTTER cost0 et cost1 !!!!! qui peuvent être vues comme des
+  approximations linéaires par morceaux de log(1/(1+exp(-theta.T x)))}
+
+
+The hypothesis of SVM is simply~:
+\begin{equation}
+h_\theta(x) = \begin{cases}
+1 & \mathrm{if } \theta^T x > 0\\
+0 & \mathrm{otherwise} 
+\end{cases}
+\end{equation}
+
+\subsection{Large margin intuition}
+
+Given the cost function introduced before, we want $\theta^T x \geq 1$
+(not just $\geq 0$) to predict $1$ and we want $\theta^T x \leq -1$
+(not just $< 0$) to predict $0$. If all the data are correctly
+classified, the first term of the cost function vanishes and we only
+keep the regularization term. Therefore, the optimization might be
+rewritten as~:
+\begin{eqnarray}
+&\mathrm{minimize}& \frac{1}{2} \sum_{j=1}^n \theta_j^2 \\
+&\mathrm{under the constrain that} & \begin{cases}
+\theta^T x \geq 1 & \mathrm{if } y = 1\\
+\theta^T x \leq -1 & \mathrm{if } y = 0
+\end{cases}
+\end{eqnarray}
+The constrain forces that the data are not too close to the decision
+boundary and it introduces a margin so that the data are not allowed
+to be in this domain. 
+
+\subsection{Mathematics behind large margin classification}
+
 
 \end{document}

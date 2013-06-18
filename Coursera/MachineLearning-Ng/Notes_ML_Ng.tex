@@ -807,5 +807,45 @@ to be in this domain.
 
 \subsection{Mathematics behind large margin classification}
 
+une intuition sur l'orientation de la frontière de décision en
+2D. Lien entre minimiser la norme de theta et maximiser la distance
+entre la frontière de décision et les exemples. En prenant un exemple
+en 2D avec 2 classes sans outliers.
+
+\subsection{Kernels}
+
+When classifying or regressing some data, we have seen it might be
+interesting to devise new features (e.g. polynomial features). Here,
+we introduce yet another way to define new features based on a
+similarity measure between the data and some particular vectors in the
+input space that we call \emph{landmarks}. This similarity measure,
+that we call a kernel, can be computed as gaussian, in which case the
+features $f_i$ are defined from landmarks $l^{(i)}$~:
+\begin{equation}
+ \forall i, f_i = \exp(-\frac{||x - l^{(i)}||^2}{2\sigma^2})
+\end{equation}
+We call it a similarity measure in the sense that if $x$ is close to
+(say equal) the landmark $l^{(i)}$, the associated feature $f_i$ will
+be approximately equal to $1$ and will decrease to $0$ (in the limit)
+when the input is moved far away from the landmark. With such
+features, even using a linear classifier we can learn non-linear
+decision boundaries as we combine gaussians centered on different
+landmarks (like in radial basis functions networks).\\
+
+The next question is how to choose these landmarks we introduced
+before. One natural definition of such landmarks is to use the
+training examples as landmarks. So given the training examples
+$(x^{(i)}, y^{(i)}), \forall i\in[1..m]$, we introduce landmarks $l^{(i)} =
+x^{(i)}, \forall i \in [1..m]$. These landmarks allow us to project a
+sample $x$ on a $m+1$ dimensional feature space $f_i =
+\mathrm{similarity}(x, l^{(i)}), \forall i \in [1..m], f_0 = 1$. Using
+this feature vector, the cost function then reads\footnote{we still
+  don't regularize $\theta_0$. One might read $\theta'^T\theta'$ where }~:
+\begin{equation}
+J(\theta) = C \sum_{i=1}^m y^{(i)} \mathrm{cost}_1 (\theta^T f^{(i)})
++ (1-y^{(i)}) \mathrm{cost}_0(\theta^T f^{(i)}) + \frac{1}{2}
+\sum_{j=1}^m \theta_j^2
+\end{equation}
+
 
 \end{document}

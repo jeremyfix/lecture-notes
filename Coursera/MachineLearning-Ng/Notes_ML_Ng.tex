@@ -847,5 +847,66 @@ J(\theta) = C \sum_{i=1}^m y^{(i)} \mathrm{cost}_1 (\theta^T f^{(i)})
 \sum_{j=1}^m \theta_j^2
 \end{equation}
 
+The parameter $C$ ($C$ might be understood as the inverse of the regularization parameter of a logistic regression) will modify the balance between perfectly fitting the training examples or allowing more generalization. Indeed, a large $C$ will decrease the bias but will increase the variance; the hypothesis will tend to overfit the training set. On the contrary, a small $C$ will increase the bias and potentially lower the variance. By potentially, we mean that we encounter the similar situation as logistic regression where a too high $\lambda$ might indeed lead to a parameter vector that is equal to $0$ and therefore both the bias and variance will be high. Similarly, a small $\sigma^2$ will tend to overfit\footnote{we might consider the extreme situation where the variance of the gaussians equals $0$ and we have very peaky, dirac like, gaussian functions} (low bias, high variance), while a large $sigma^2$ will favor generalization with a higher bias but a lower variance.
+
+\subsection{Using a SVM, SVM vs logitstic regression}
+
+In order to make use of a SVM classifier, probably the best option is to use of the shelf libraries such as \textbf{liblinear} or \textbf{libsvm}. We only need to provide the parameters such as $C$, but also $\sigma^2$ in case of gaussian kernels. Several other kernels might be used such polynomial kernels, string kernels, chi-square kernels, intersection kernel, etc... All the kernels must satisfy the Mercer theorem. For multi-class classification, make us of the algorithms provided in the library or do it use one versus all. Between the linear kernel and the gaussian kernel, it is better to use a linear kernel when the number of features is large enough and a gaussian kernel in case the number of features is not sufficiently large.\\
+
+It is advised to use a SVM or logistic regression depending on the situation. Let's denote $n$ the number of features ($x \in \Re^{n+1}$) and $m$ the number of training examples.
+\begin{itemize}
+\item if $n$ is large relative to $m$ (e.g. $n \geq m, n=10^4, m=10..1000$), use a logitstic regression or linear SVM
+\item if $n$ is small and $m$ intermediate (e.g. $n = 1.. 1000, m= 10..10^4$), use SVM with gaussian kernel
+\item if $n$ is small and $m$ is large (e.g. $n=1..1000, m=50.10^4+$), create or add more features and then use a logistic regression or a linear SVM.
+\end{itemize}
+Neural networks are likely to work better in all these situations but slower to train. Also, don't forget to normalize (center and reduce the data before applying one of these algorithms).
+
+\section{Clustering}
+
+\subsection{Unsupervised learning introduction}
+
+In the previous sections, we dealt with supervised learning algorithms where the dataset was made of labeled data. In unsupervised learning, we use unlabeled data. In this situation, we try to identify a structure in the data, to isolate clusters.
+
+\subsection{K-means algorithm}
+
+The K-means algorithm is a simple algorithm to extract a predefined number $K$ of clusters~:
+\begin{enumerate}
+\item generate randomly $K$ so-called centroids $\mu_i, i\in[1..K]$
+\item repeat centroid assignement, centroid move
+\end{enumerate}
+In the centroid assignement step, we just assign the closest centroid to each element of the training set. In the centroid move step, we update the centroids as the mean of the vectors assigned to this cluster. We can repeat these steps until the centroids don't get modified.\\
+
+The K-means algorithm can be seen as minimizing the distorsion defined as~:
+\begin{equation}
+J( \{c^{(i)}, i \in [1..m]\}, \{ \mu_j, j\in[1..K]\}) = \sum_{i=1}^m ||x^{(i)} - \mu_{c^{(i)}}||^2
+\end{equation}
+where $c^{(i)}$ is the cluster number of the exemple $x^{(i)}$ and $\mu_j$ is the centroid of cluster $j$. The cluster assignement step minimizes the cost function with respect to the assignements $c^{(i)}$ (i.e. $\mu_j$ held fixed) while the centroid move step minimizes the cost function with respect to the centroid centers $\mu_j$ (i.e. the assignements held fixed).\\
+
+When initializing the centroids, it is better to pick randomly $K$ training examples. Indeed, there are some situations where the algorithm would have very bad performances if the clusters are initialized purely randomly. For example, if the clusters are initialized far from the examples, it is possible that one cluster will get all the training data, it will be moved closer to the distribution of the data and might always be the only populated cluster, the others staying far away from the data. This might be avoided when picking $K$ random training samples for initializing the clusters.\\
+
+Also, the algorithm will converge and maintain its assignements at some point in time but this might correspond to a local minimum of the distorsion. So it is better to run several times the algorithm and keep only the run in which the distorsion is minimum.\\
+
+To choose the number of clusters, it might be pretty easy in some situations (say when you can actually plot the data, ... but even there it might not be always clear how many clusters should considered). One method to tune the number of clusters is to plot the quality of the clustering function of the number of clusters and select the smallest number of clusters that does not show a significant improvement (the elbow method). The quality might be assessed from the distorsion or from the explained variance ratio (F-test). If clustering is one step of a larger machine learning system, one might also choose the number of clusters that lead to an overall better performance.
+
+
+\section{Dimensionality reduction}
+
+There are several reasons why one is interested in reducing the dimensionality of some data. One of them is to compress the information for example for a training algorithm for which the execution time depending on the dimension of the feature vector. Another motivation is for visualizing a dataset in 2D/3D instead of the original, say, 50 dimensional space.\\
+
+Principal Component Analysis is one way to perform such a dimensionality reduction. In general, it is formulated as finding $k$ vectors such that the projection error of $n$ data is minimized\footnote{it is different from linear regression where we seek to minimize the norm of the residual not of the projection error.}. To compute the PCA~:
+\begin{enumerate}
+\item mean normalize the data (optionally feature scale the data as well)
+\item compute the covariance matrix of the normalized data : $\Sigma = \sum_i (x^{(i)})^T (x^{(i)}$
+\item compute the SVD of the covarance matrix $U.S.V = \mathrm{svd}{\Sigma}$
+\item retain only the $K$ first columns of $U$, i.e. the $K$ eigen vectors with the largest singular components in $S$. 
+\end{enumerate}
+
+By projecting the data on the selected vectors $U_j , j \in [1..K]$, we get the compressed data (the scalar product of a sample on these vectors). We can also reconstruct an approximation of the original data by summing the $U_i$ vectors weighted by their projection value. To select the number of dimensions, one should compute the ratio of the average reconstruction error to the total variance of the data and select $K$ such that this ratio is lower than $0.01$ if we wish to retain 99\% of the variance, or $0.05$ if we wish to retain $95\%$ of the variance. \\
+
+It might be useful to use PCA to reduce the number of features of a supervised learning algorithm but it is a \textbf{bad option} to use it to prevent overfitting (it is much better to use regularization).
+
+\section{Anomaly detection}
+
+
 
 \end{document}

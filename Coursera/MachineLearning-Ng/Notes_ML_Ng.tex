@@ -10,8 +10,8 @@
 \usepackage[T1]{fontenc}
 \usepackage[bitstream-charter]{mathdesign}
 
-\usepackage[utf8]{inputenc}							% Input encoding
-\usepackage{amsmath}									% Math
+\usepackage[utf8]{inputenc}% Input encoding
+\usepackage{amsmath}	% Math
 
 \usepackage{xcolor}
 \definecolor{bl}{rgb}{0.0,0.2,0.6} 
@@ -541,6 +541,311 @@ class of the input $x^{(i)}$.
 
 \textbf{Ref pour l'approximateur universel?}
 
+\section{10}
+
+In this section, few advices are given so as to know on which parameters one must play in order to improve the performances of the machine learning algorithm.\\
+
+For example, when we test an hypothesis and find that it performs very badly on new unknown data, there are indeed various options one may be tempted to try, among which :
+\begin{itemize}
+\item get more training examples, it will probably better constrain the optimization of the hypothesis
+\item try smaller sets of features to avoid overfitting
+\item try getting additional features
+\item try adding polynomial features
+\item try decreasing or increasing the regularization parameter $\lambda$
+\end{itemize}
+Instead of trying one of these options at random, we can diagnose what is going wrong with our algorithm. One possibility to diagnose how an hypothesis performs is, in low dimension (up to 3), to plot the decision boundary for classification or the hypothesis directly for regression. However, in higher dimensions, this is not possible. \\
+
+\subsection{Training set/Test set and error measures}
+We would rather split the dataset in (at least) two datasets : a \textbf{training set} (70\% of the data) and a \textbf{test set} (30 \% of the data).\footnote{be sure that these sets are made of random samples of the datasets to avoid training on a specific region of the space while testing on another non-overlapping region}. Then we optimize the parameters on the training set and measure the generalization error on the test set. For classification problems, one may also measure the misclassification error~:
+\begin{equation}
+\mbox{err}(h_\theta(x), y) = \begin{cases}
+1 & \mbox{ if } h_\theta(x) \geq 0.5, y = 0\\
+  & \mbox{ or } h_\theta(x) < 0.5, y = 1\\
+0 & \mbox{ otherwise} 
+\end{cases}
+\end{equation}
+The test classification error is then just the mean over the test set of the misclassification error above which represents the proportion of the test set that is misclassified.
+
+\subsection{Model selection and train/validation/test sets}
+
+As we know already, the training error alone is not an appropriate measure for evaluating the performances of an hypothesis on unseen data since we might be overfitting. Instead, we should use the test set error. Suppose we wish to select among several polynomial hypothesis one that performs better. To do such a model selection, we will compare the test set errors and select the model with the lowest test error; However, to report the generalization ability of the model that we selected, we should use additional data as using the test set might overestimate the generalization error of the model (the degree of polynomial was indeed selected so that the test set error is decreased). Therefore, we should split the dataset into three pieces : \textbf{the training set} (60\%), \textbf{the cross-validation (cv) or validation set} (20\%) and \textbf{the test set} (20\%):
+\begin{itemize}
+\item the training set is used to optimize the parameters of the models
+\item the test set is used for selecting among the various that we have trained
+\item the validation set is used to estimate the generalization error of the selected model
+\end{itemize}
+
+\subsection{Bias/variance issues}
+
+High bias issue is when the hypothesis is not sufficiently complex (underfit) while high variance is when the hypothesis is too complex (overfit). To better appreciate these issues, let us consider the case of polynomial hypothesis and plot both the training and validation errors as function of the degree of the polynomial (fig.~\ref{fig:crossvalidation_training_errors}). \\
+
+As we increase the degree of the polynomial, we expect the training error to decrease as the model is more and more complex and we can overfit the training set more easily with higher degrees. The cross validation error will usually start as high as the training error, decrease and, then , at some point, increase as we overfit the training set and impair the generalization ability of the hypothesis.\\
+
+\begin{figure}[htbp]
+\includegraphics[width=0.5\columnwidth]{./Figs/crossvalidation_training_errors.png}
+\caption{\label{fig:crossvalidation_training_errors}Typical curves of training and validation errors function of the degree of a polynomial hypothesis}
+\end{figure}
+
+Detecting whether we encounter a high variance or high bias problem is critical as we will not behave the same way in the two conditions. A high bias means a model that is not enough complex such that it cannot even fit the training set properly. A high variance means a model that is too complex so that it certainly fits perfectly the training set but performs poorly on the test set.
+
+\begin{tabular}{|c|c|c|c|}
+                &      & Validation error &      \\
+                &      & Low              & High \\
+\hline
+Training error  & Low  & Good             & High variance \\
+                & High &  -               & High bias \\
+\end{tabular}
+
+
+\subsection{Regularization and bias variance}
+
+Varying the regularization parameter will affect the bias/variance. A very large parameter will penalize high values, leading to small parameters, leading to a high bias (fig.~\ref{fig:bias_variance_regularization}). If the regularization parameter is too small, say absent, a model that is too complex will not be penalized and we will probably run into high variance issues. Therefore, the regularization parameter must be correctly adjusted. This parameter must be choosen empirically, by testing different values for this parameter and checking both the training and cross validation errors. We then peak out the parameter giving a the lowest cross validation error and then evaluate the true performances on the test set.
+
+
+\begin{figure}[htbp]
+\includegraphics[width=0.5\columnwidth]{./Figs/bias_variance_regularization.png}
+\caption{\label{fig:bias_variance_regularization} Skecthes of how the training and cross validation errors usually evolve as a function of the regularization parameter.}
+\end{figure}
+
+We can also plot the training and cross validation errors as functions of the number of training examples (\textbf{the learning curves}). The training error usually increases as you use a larger training set as it is pretty easy to fit perfectly few examples while more complicated to fit more. The cross validation error will usually decrease as you more easily overfit small training set and you generalize better if you use more training examples that better constrain the hypothesis.
+
+\begin{itemize} 
+\item if an algorithm is suffering from \textbf{high bias} (e.g. the hypothesis is not complex enough), getting \textbf{more training data will not help much}
+\item if an algorithm is suffering from \textbf{high variance}, getting \textbf{more training data will help}
+\end{itemize}
+
+Given the previous observations, below is a list of options to consider depending on whether we face a high bias or high variance issue~:
+\begin{itemize}
+\item Getting more training examples : will help fixing high variance problems
+\item try smaller sets of features: will help fixing high variance problems
+\item try getting additional features: will usually help fixing high bias
+\item try adding polynomial features : might help fixing high bias
+\item try decreasing $\lambda$ for fixing high gbias, increasing $\lambda$ for fixing high variance
+\end{itemize}
+
+\section{Machine learning system design}
+
+\subsection{Prioritizing what to work on : Spam classification example}
+
+This section deals with various aspects of designing a machine
+learning system using the example of designing a spam classifier.\\
+
+
+The first step is to decide what to use for the features. For example,
+we might use $100$ words that we consider might be indicative of the
+spam/non-spam category or to actually pike the words appearing the
+most frequently in the emails. The feature vector will then be a
+binary vector indicating whether a word appears or not in the email to
+classify. Some specific sophisticated features might also be added
+(e.g. from the header of the email, the body, checking for mispelled
+words, ...).\\
+
+\subsection{Error analysis}
+
+To design a machine learning system, one should 
+\begin{enumerate}
+\item start with a simple, quickly to implement, (dirty) algorithm and test it on a cross validation set
+\item plot learning curves to decide whether we should focus on more data, more features, ...
+\item error analysis : check which examples are misclassified from the cross validation set and why they are misclassified (what is particular about them)
+\end{enumerate}
+
+In particular, error analysis is really critical as it will really
+help in adjusting the features to use. For spam classification, a
+stemming software (e.g. Porter Stemmer) can be usefull for deciding
+whether or not some variations of the same word should be considered
+the same word. In this situation, there is no other solutions than
+trying different solutions and comparing their performances with
+respect to the cross-validation and test errors.
+
+\subsection{Error metrics for skewed classes}
+
+An important caveat can lead us to misinterpret the test
+error. Imagine we train a classifier for deciding whether or not a
+patient has a cancer. If we get a test error of 1\% we might say the
+learning algorithm is doing pretty well. However, if the data are such
+that only 0.5 \% of the patients have a cancer, the 1\% is actually
+pretty high. We speak about \textbf{skewed classes} when the positive and
+negative examples of the data are really unbalanced as it was the case
+for the cancer data. Indeed, in such a situation, it is pretty easy to
+design an efficient algorithm with respect to the test error: just
+attribute the label of the largest class ! In such a situation, the usual
+\textbf{classification error on the test set is not a sound error
+  metric}. We rather introduce other measures : precision, recall,
+accuracy, QUATIREME ELEMENT !!!! Suppose we work on a binary
+classification task, we then introduce true/false positives and
+true/false negatives according to the following table~:
+\begin{tabular}{cccc}
+& & Actual class & \\
+& & 1            & 0 \\
+Predicted class & 1 & True positive & False positive \\
+                & 0 & false negative & true negative \\
+\end{tabular}
+
+The four measures are then defined as~:
+\begin{eqnarray}
+\mathrm{precision} &=& \frac{\mathrm{true\ positives}}{\mathrm{\#predicted\
+  positive}} = \frac{\mathrm{true\ positives}}{\mathrm{true\
+    positives}+\mathrm{false\ positives}}\\
+\mathrm{recall} &=& \frac{\mathrm{true\ positives}}{\mathrm{\#actual\
+  positives}} = \frac{\mathrm{true\ positives}}{\mathrm{true\
+    positives}+\mathrm{false\ negatives}}
+\end{eqnarray}
+The \textbf{precision} indicates the fraction of the patients that are
+positives among the patients classified as positives\footnote{by
+  convention, when faced a classification problem with skewed classes,
+the rare cases are the positive ones}. The
+\textbf{recall} indicates the fraction of positive examples that were
+correctly classified as positive. If we consider our example where the
+algorithm classifies all the patients as not having a cancer, both the
+recall and precision will be zero.
+
+\subsection{Trading off precision and recall and $F_1$ score}
+
+If we continue with our example of cancer classification and check the
+influence of the decision threshold (say with a hypothesis
+$0 \leq h_\theta(x) \leq 1$, we predict $1$ if $h_\theta(x) \geq T$
+and $0$ if $h_\theta(x) < T$). If $T = 0.5$ we have a certain
+precision and recall. If \textbf{we increase $T$}, say $T=0.9$, we will be much
+more selective and much more confident about the examples that we
+classify as positives. Therefore, the fraction of examples that are
+really positives among the ones that we classify as positives will be
+higher, then a \textbf{higher precision}. However, as much less examples are
+classified as positives, the \textbf{recall will be lower}. If on the
+opposite, we decrease the threshold, say $T=0.3$, we will be more
+conservative as more than necessary patients will be classified as
+positive, in which case we will have a \textbf{lower precision} and \textbf{a
+higher recall}. Usually, there is a trade off between precision and
+recall. Now, if we compare several algorithms (or the same with
+different meta-parameters), they will have different precision $P$ and
+recall $R$ values. To compare them, we introduce the $F_1$ score. As
+we saw previously, some simple algorithms (like always assigning the
+same class) is not a usefull classifier. Whether always saying ``class
+0'' or ``class 1'', these algorithms will have whether high precision
+and low recall or low precision and high recall. If we compute the
+mean of precision and recall, it will be the same in the two
+situations as well as the same as an algorithm which has equal
+precision and recall. Therefore, the mean is not discriminative enough
+for deciding which algorithm performs best. The $F_1 \in [0,1]$ score is rather
+defined as~:
+\begin{equation}
+F = 2 \frac{P R}{P + R}
+\end{equation}
+
+
+\subsection{Data for machine learning}
+
+Banko and Brill 2001 worked on the problem of predicting a word in a set of confusable
+words. They compared the performance of four algorithms: Perceptron,
+Winnow, Memory-based, Naïve bayes. They measured the performance of
+these algorithms varying the training set size. It appears that all
+the algorithms improved with the training set size but as the dataset
+get larger and larger, three of them were better than the last (Memory
+based). Collecting a larger dataset is particularly useful if the
+features bring enough information to predict the output (e.g. ``Can a
+human expert confidently predict the output?''). Using a very large
+training set allow to consider \emph{complex} models (which might lead
+to high variance with a small dataset) without falling into an overfit issue.
+
+
+\section{Support vector machines}
+
+We already saw previously various supervised learning algorithms
+(namely logistic regression, neural networks). We now turn on to
+another learning algorithm: the Support Vector Machine (SVM).
+
+\subsection{Optimization objective}
+
+The objective function for SVM reads~:
+\begin{equation}
+J(\theta) = C \sum_{i=1}^m y^{(i)} \mathrm{cost}_1(\theta^T
+x^{(i)}) + (1-y^{(i)}) \mathrm{cost}_0(\theta^T x^{(i)}) +
+\frac{1}{2} \sum_{j=1}^n \theta_j^2
+\end{equation}
+It is just the cost function of logistic regression where :
+\begin{enumerate}
+\item we dropped
+the normalization term $1/m$ (which does not change the position of
+the optimum) ,
+\item replaced $-\log(h_\theta(x^{i})),
+-\log(1-h_\theta(x^{(i)}))$ by $\mathrm{cost}_1(\theta^T x^{(i)}),
+\mathrm{cost}_0(\theta^T x^{(i)})$,
+\item and moved the regularization term on the first member in the
+  cost function (again, this does not change the optimization problem
+  drastically, it is just a scaling factor).
+\end{enumerate}
+
+\textbf{PLOTTER cost0 et cost1 !!!!! qui peuvent être vues comme des
+  approximations linéaires par morceaux de log(1/(1+exp(-theta.T x)))}
+
+
+The hypothesis of SVM is simply~:
+\begin{equation}
+h_\theta(x) = \begin{cases}
+1 & \mathrm{if } \theta^T x > 0\\
+0 & \mathrm{otherwise} 
+\end{cases}
+\end{equation}
+
+\subsection{Large margin intuition}
+
+Given the cost function introduced before, we want $\theta^T x \geq 1$
+(not just $\geq 0$) to predict $1$ and we want $\theta^T x \leq -1$
+(not just $< 0$) to predict $0$. If all the data are correctly
+classified, the first term of the cost function vanishes and we only
+keep the regularization term. Therefore, the optimization might be
+rewritten as~:
+\begin{eqnarray}
+&\mathrm{minimize}& \frac{1}{2} \sum_{j=1}^n \theta_j^2 \\
+&\mathrm{under the constrain that} & \begin{cases}
+\theta^T x \geq 1 & \mathrm{if } y = 1\\
+\theta^T x \leq -1 & \mathrm{if } y = 0
+\end{cases}
+\end{eqnarray}
+The constrain forces that the data are not too close to the decision
+boundary and it introduces a margin so that the data are not allowed
+to be in this domain. 
+
+\subsection{Mathematics behind large margin classification}
+
+une intuition sur l'orientation de la frontière de décision en
+2D. Lien entre minimiser la norme de theta et maximiser la distance
+entre la frontière de décision et les exemples. En prenant un exemple
+en 2D avec 2 classes sans outliers.
+
+\subsection{Kernels}
+
+When classifying or regressing some data, we have seen it might be
+interesting to devise new features (e.g. polynomial features). Here,
+we introduce yet another way to define new features based on a
+similarity measure between the data and some particular vectors in the
+input space that we call \emph{landmarks}. This similarity measure,
+that we call a kernel, can be computed as gaussian, in which case the
+features $f_i$ are defined from landmarks $l^{(i)}$~:
+\begin{equation}
+ \forall i, f_i = \exp(-\frac{||x - l^{(i)}||^2}{2\sigma^2})
+\end{equation}
+We call it a similarity measure in the sense that if $x$ is close to
+(say equal) the landmark $l^{(i)}$, the associated feature $f_i$ will
+be approximately equal to $1$ and will decrease to $0$ (in the limit)
+when the input is moved far away from the landmark. With such
+features, even using a linear classifier we can learn non-linear
+decision boundaries as we combine gaussians centered on different
+landmarks (like in radial basis functions networks).\\
+
+The next question is how to choose these landmarks we introduced
+before. One natural definition of such landmarks is to use the
+training examples as landmarks. So given the training examples
+$(x^{(i)}, y^{(i)}), \forall i\in[1..m]$, we introduce landmarks $l^{(i)} =
+x^{(i)}, \forall i \in [1..m]$. These landmarks allow us to project a
+sample $x$ on a $m+1$ dimensional feature space $f_i =
+\mathrm{similarity}(x, l^{(i)}), \forall i \in [1..m], f_0 = 1$. Using
+this feature vector, the cost function then reads\footnote{we still
+  don't regularize $\theta_0$. One might read $\theta'^T\theta'$ where }~:
+\begin{equation}
+J(\theta) = C \sum_{i=1}^m y^{(i)} \mathrm{cost}_1 (\theta^T f^{(i)})
++ (1-y^{(i)}) \mathrm{cost}_0(\theta^T f^{(i)}) + \frac{1}{2}
+\sum_{j=1}^m \theta_j^2
+\end{equation}
 
 
 \end{document}

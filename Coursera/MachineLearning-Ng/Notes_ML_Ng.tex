@@ -896,7 +896,7 @@ There are several reasons why one is interested in reducing the dimensionality o
 Principal Component Analysis is one way to perform such a dimensionality reduction. In general, it is formulated as finding $k$ vectors such that the projection error of $n$ data is minimized\footnote{it is different from linear regression where we seek to minimize the norm of the residual not of the projection error.}. To compute the PCA~:
 \begin{enumerate}
 \item mean normalize the data (optionally feature scale the data as well)
-\item compute the covariance matrix of the normalized data : $\Sigma = \sum_i (x^{(i)})^T (x^{(i)}$
+\item compute the covariance matrix of the normalized data : $\Sigma = \sum_i (x^{(i)})^T (x^{(i)})$
 \item compute the SVD of the covarance matrix $U.S.V = \mathrm{svd}{\Sigma}$
 \item retain only the $K$ first columns of $U$, i.e. the $K$ eigen vectors with the largest singular components in $S$. 
 \end{enumerate}
@@ -906,6 +906,67 @@ By projecting the data on the selected vectors $U_j , j \in [1..K]$, we get the 
 It might be useful to use PCA to reduce the number of features of a supervised learning algorithm but it is a \textbf{bad option} to use it to prevent overfitting (it is much better to use regularization).
 
 \section{Anomaly detection}
+
+In anomaly detection, we are given a set of unlabeled or labeled examples from
+which we want to determine which elements are somehow different from
+the others. The idea is to fit a probability distribution on the
+normal data. For testing if an element is ``anomalous'', we compute the
+probability that the element belongs to the distribution we
+learned. If this probability is lower than a threshold $\epsilon$ we
+consider it to be anomalous. One such probability distribution is the
+gaussian distribution $\mathcal{N}(\mu, \sigma^2)$~:
+\begin{equation}
+p(x) = \frac{1}{\sigma \sqrt{2\pi}} \exp(-\frac{(x-\mu)^T(x - \mu)}{2\sigma^2})
+\end{equation}
+Assuming the features are independent, we can model the probability of
+having a sample $x$ as the product of gaussians over all the
+dimensions~:
+\begin{equation}
+p(x) = \prod_j p(x_j/\mu_j, \sigma_j) = \prod_j \frac{1}{\sigma_j \sqrt{2\pi}} \exp(-\frac{(x_j-\mu_j)^2}{2\sigma_j^2})
+\end{equation}
+We then have $2n$ parameters to estimate, the mean and the variance of
+each gaussian. These can be estimated independently as~:
+\begin{eqnarray}
+\mu_j &=& \frac{1}{m}\sum_{i=1}^m x_j^{(i)} \\
+\sigma_j^2 &=& \frac{1}{m}\sum_{i=1}^m (x_j^{(i)} - \mu_j)^2
+\end{eqnarray}
+Then, to decide if an example $x$ is anomalous, we compute the
+probability $p(x)$ and compare it to a threshold $\epsilon$.\\
+
+Now let us consider the labels. Usually, we may have much more normal
+cases than anomalous cases. For example, we might get $10000$ good
+examples and only $20$ anomalous cases. From these, we might define a
+training set made of $6000$ normal cases, a cross validation set made
+of $2000$ normal cases and $10$ anomalous cases and a test set of
+$2000$ normal cases and $10$ anomalous cases. The previous probability distribution
+is fitted to the normal cases of the training set. We then use a cross validation set from
+which the threshold $\epsilon$ will be defined. In order to set the
+appropriate threshold, one must use the $F_1$ score as the classes are
+unbalanced.\\
+
+If the dimensions of the feature vectors are not independent, one can
+model the probability distribution as a multivariate normal
+distribution with mean $\mu$ and covariance matrix $\Sigma$ to be
+estimated as~:
+\begin{eqnarray}
+\mu &=& \frac{1}{m} \sum_i x^{(i)}\\
+\Sigma &=& \frac{1}{m} \sum_i (x^{(i)} - \mu) (x^{(i)}-\mu)^T
+\end{eqnarray}
+The probability that a sample $x$ belongs to the distribution then
+reads~:
+\begin{equation}
+p(x) = \frac{1}{(2\pi)^{n/2} \sqrt{|\Sigma|}} \exp(-\frac{1}{2}
+(x-\mu)^T \Sigma^-1 (x-\mu))
+\end{equation}
+Be carefull, for $\Sigma$ to be invertible, one must have a training
+set larger than the number of features.\\
+
+Some advices. It is always a good practice to draw histograms of the
+features to check if they are normally distributed. If not, one can
+adjust these features to render them gaussian like. Also, it might be
+necessary to combine the features we have to get new features that
+help in discriminating the anomalies.
+
 
 
 

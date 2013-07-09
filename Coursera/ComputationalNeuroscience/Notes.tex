@@ -452,4 +452,58 @@ the brain.
 
 
 
+\section{Bidirectional BCI (E. Fetz)}
+
+Bidirectional BCI is a new paradigm introduced by E. Fetz where some
+neurons are recorded (or some EEG, ECOG\footnote{electrocorticogram}, LFP, ..), processed in real
+time by an electronic device and then sent back to the brain. The
+electronic device, the so-called neurochip, is presented in
+Mavoori(2005) for primates. There two types of applications of
+bidirectional BCI~:
+\begin{itemize}
+\item create artificial recurrent connections that the brain will
+  incorporate in its processing. It might compensate loss of
+  connections,
+\item create synaptic plasticity.
+\end{itemize}
+
+\subsection{Creating artificial recurrent connections}
+
+Monkeys could learn to use these interfaces to control electrical
+stimulation of paralyzed muscles [Moritz, Perlmutter(2008)]. The
+monkey can learn the task in 10 to 20 minutes. The muscles can be
+driven by two different cells (flexion and extension depends on the
+activity of the respective cells being higher than a threshold). They
+can also be controlled by a single cell where what is monitored is
+whether the activity is higher than a flexor threshold or lower than a
+extensor threshold. The important point is also is that it is not
+necessary to monitor cells normally involved in controlling the
+muscles. The extension from one to multiple muscles is not
+straightforward as the contraction/release of different muscles is
+usually coordinated. Another site of stimulation is the spinal
+cord. Spinal sites typically evoke coordinated movements. 
+
+\subsection{Plasticity of corticospinal connections}
+
+There are some neurons that have monosynaptic connections to the
+muscles [Cheney, Fetz (1980)]. These can be identified by
+computing spike-triggered averages of muscle contraction. Then, you
+can check which muscles are facilitated when the neuron is triggering
+spikes (so called post spike facilitation). These neurons get
+recorded, feeding the neurochip which stimulates the target of the
+recorded neurons in the spinal cord. The stimulation is set so that
+they are in synchrony with the signals received directly from the
+motor neurons [Nishimura et aL.]. After a full day training, the post
+spike effect is increased. The effect is greater for a specific delay
+(around 20 ms) between a recorded spike and the intraspinal
+stimulation. Interestingly, if the stimulation arrives too early, the
+post-synaptic spinal neuron gets excited before receiving the afferent
+stimulation from the moto-neuron, and this indeed leads to a decrease
+of the post spike facilitation.
+
+
+Leuthardt et al 2007 : boucle BCI standard avec en entrée EEG, ECOG ou
+LFP. Ils présentent aussi le bidirectional ou stimule des muscles,
+spinal cord, ou le cerveau de manière générale.
+
 \end{document}

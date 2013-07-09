@@ -967,6 +967,28 @@ adjust these features to render them gaussian like. Also, it might be
 necessary to combine the features we have to get new features that
 help in discriminating the anomalies.
 
+\section{Recommendation systems}
+
+We suppose we are given some (discrete) ratings by different users of,
+say, movies. Some users may not know about other movies that they,
+therefore, did not rated. That user $j$ rated element $i$ is denoted
+as $r(i,j) = 1$ , and $0$ otherwise. The rating per itself, by user
+$j$ of element $i$ is denoted $y^{(i,j)}$. Based on the other users, we
+would like to estimate the rating of movies a user does not know
+about, i.e. predict the rating $y^{(i,j)}$ for user $j$ and element
+$i$ such that $r(i,j) = 0$. If feature vectors are provided for the
+movies, this problem strongly relates to standard regression  (except
+that we must care about the value of $r(i,j)$ in the cost function).\\
+
+Another technique, called collaborative filtering, seeks both the
+estimates the parameter vectors of the regression, as well as the
+feature vectors of the movies. In this situation, we simply consider
+successively two minimization problems (with their related regularized
+cost functions) on $\theta$ and on the features $x^{(i)}$. We can also
+combine the feature vectors and parameter vector $\theta$ into a
+larger parameter vector with respect to which the gradient descent
+will be performed;
+
 
 
 
